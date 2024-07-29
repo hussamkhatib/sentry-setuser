@@ -1,4 +1,5 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import * as Sentry from "@sentry/nextjs";
 import { type GetServerSidePropsContext } from "next";
 import {
   getServerSession,
@@ -63,6 +64,14 @@ export const authOptions: NextAuthOptions = {
      * @see https://next-auth.js.org/providers/github
      */
   ],
+  events: {
+    signIn({ user }) {
+      Sentry.setUser({ id: user.id, email: user.email ?? undefined });
+    },
+    signOut() {
+      Sentry.setUser(null);
+    },
+  },
 };
 
 /**

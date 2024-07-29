@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { TRPCError } from "@trpc/server";
 
 import {
   createTRPCRouter,
@@ -7,6 +8,12 @@ import {
 } from "~/server/api/trpc";
 
 export const postRouter = createTRPCRouter({
+  testSentry: protectedProcedure.mutation(async () => {
+    throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "test",
+    });
+  }),
   hello: publicProcedure
     .input(z.object({ text: z.string() }))
     .query(({ input }) => {
